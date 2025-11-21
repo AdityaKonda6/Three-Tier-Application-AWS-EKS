@@ -272,26 +272,31 @@ This should serve as a consolidated Kubernetes + EKS cheat sheet in markdown for
 # HELM COMMANDS
 # Basic interpretations/context
 Chart:
-
+```bash
 It is the name of your chart in case it has been pulled and untarred.
 It is <repo_name>/<chart_name> in case the repository has been added but chart not pulled.
 It is the URL/Absolute path to the chart.
+```
 Name:
-
+```bash 
 It is the name you want to give to your current helm chart installation.
+```
 Release:
-
+```bash
 Is the name you assigned to an installation instance.
+```
 Revision:
-
+```bash
 Is the value from the Helm history command
+```
 Repo-name:
-
+```bash
 The name of a repository.
+```
 DIR:
-
+```bash
 Directory name/path
-
+```
 
 # Chart Management
 
