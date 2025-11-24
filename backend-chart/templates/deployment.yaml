@@ -60,17 +60,17 @@ spec:
           livenessProbe:
             httpGet:
               path: /ok
-              port: 3500
+              port: {{ .Values.service.port }}
             initialDelaySeconds: 2
             periodSeconds: 5
           readinessProbe:
             httpGet:
               path: /ok
-              port: 3500
+              port: {{ .Values.service.port }}
             initialDelaySeconds: 5
             periodSeconds: 5
             successThreshold: 1
-          {{- with .Values.resources }}
+          {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
