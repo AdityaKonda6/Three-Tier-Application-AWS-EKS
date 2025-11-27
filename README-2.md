@@ -1,273 +1,437 @@
-# 🌐 Three-Tier Application Deployment on **AWS EKS**
+# Kubernetes & kubectl Comprehensive Cheat Sheet
 
-A comprehensive guide to deploying a **React Frontend**, **Node.js Backend**, and **MongoDB** database on **Amazon EKS** using **Docker**, **ECR**, **Helm**, **Kubernetes**, and the **AWS Load Balancer Controller**.
-
----
-
-# 🏗️ Deployment Architecture
-
-<img width="840" height="383" alt="image" src="https://github.com/user-attachments/assets/1ec2e7d4-45a3-4fc4-a408-d1274e623dd0" />
-
+This document consolidates all key commands and information extracted from the provided cheat sheets, and also includes a full guide on Amazon EKS (Elastic Kubernetes Service).
 
 ---
 
-# 📘 Table of Contents
+# 🧭 **kubectl Cheat Sheet**
 
-* [Overview](#overview)
-* [Architecture Flow](#architecture-flow)
-* [Prerequisites](#prerequisites)
-* [Tool Installation](#tool-installation)
-* [Cluster Access Setup](#cluster-access-setup)
-* [Deployment Chronology](#deployment-chronology)
-* [MongoDB Deployment](#mongodb-deployment)
-* [Backend Deployment](#backend-deployment)
-* [Frontend Deployment](#frontend-deployment)
-* [Ingress / External Access](#ingress--external-access)
-* [Verification](#verification)
-* [Cleanup](#cleanup)
+## ## **Listing Resources**
+
+* `kubectl get namespaces` – List all namespaces
+* `kubectl get pods` – List all pods in current namespace
+* `kubectl get pods -o wide` – Detailed pod list
+* `kubectl get pods --field-selector=<selector>,nodeName=<server-name>` – List pods on specific node
+* `kubectl get replicationcontroller [name]` – List replication controllers
+* `kubectl get replicationcontroller,services` – List replication controllers & services
+* `kubectl get daemonset` – List daemon sets
 
 ---
 
-# 🧩 Overview
+## ## **Displaying State of Resources**
 
-This project deploys a **three-tier cloud-native application** on **AWS EKS**:
-
-| Tier                | Component                  | Technology                     | Description                             |
-| ------------------- | -------------------------- | ------------------------------ | --------------------------------------- |
-| 1️⃣ Presentation    | React Frontend             | Docker, Kubernetes             | Provides UI, runs on port **3000**      |
-| 2️⃣ Application     | Node.js Backend API        | Docker, Kubernetes             | Handles business logic on port **3500** |
-| 3️⃣ Data            | MongoDB                    | Stateful Kubernetes Deployment | Stores application data                 |
-| 🌐 External Routing | AWS ALB Ingress Controller | ALB                            | Publishes services publicly             |
+* `kubectl describe nodes [name]`
+* `kubectl describe pods [name]`
+* `kubectl describe -f pod.json`
+* `kubectl describe pods [replication-controller-name]`
+* `kubectl describe pods`
 
 ---
 
-# 🔁 Architecture Flow
+## ## **Printing Container Logs**
 
-## 1. **Frontend (React)**
-
-* Dockerized and pushed to **Amazon ECR**
-* Deployed using **Helm** in Kubernetes
-
-## 2. **Backend (Node.js)**
-
-* Packaged as Docker image → stored in ECR
-* Deployed via Helm with environment variables and MongoDB connection string
-
-## 3. **MongoDB**
-
-* Runs as a Kubernetes Deployment + Persistent Volume Claim
-* Secured with k8s Secrets
-
-## 4. **Docker**
-
-* All components are built and tagged locally
-* Images pushed to ECR for deployment
-
-## 5. **ECR (Elastic Container Registry)**
-
-* Stores Docker images consumed by Kubernetes
-
-## 6. **Kubernetes Cluster**
-
-Handles:
-
-* Rolling updates
-* Auto-healing
-* Networking
-* Scaling
-* Pod lifecycle
-
-## 7. **Ingress**
-
-* AWS ALB Ingress routes external traffic
-* Separate routes for frontend (`/`) and backend (`/api`)
-
-## 8. **Load Balancer**
-
-* Public ALB endpoint
-* Routes traffic to Ingress Controller
-
-## 9. **Users**
-
-* Access the application via ALB FQDN or domain name
+* `kubectl logs [pod-name]` – Print logs
+* `kubectl logs -f [pod-name]` – Stream logs
 
 ---
 
-# 📦 Prerequisites
+## ## **Deleting Resources**
 
-Before deploying, ensure you have:
-
-* An **AWS account**
-* IAM permissions for:
-
-  * EKS
-  * ECR
-  * IAM Roles
-  * ALB Ingress Controller
-* Local copies of:
-
-  * `backend-chart/`
-  * `frontend-chart/`
+* `kubectl delete -f pod.yaml`
+* `kubectl delete pods,services -l [key]=[value]`
+* `kubectl delete pods --all`
 
 ---
 
-# 🛠️ Tool Installation
+## ## **Creating Resources**
 
-### 1. Install AWS CLI
+* `kubectl create namespace <namespace>`
+* `kubectl create -f <file>` – Create resources from YAML/JSON
 
-```bash
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o awscliv2.zip
-unzip awscliv2.zip
-sudo ./aws/install
-aws --version
+---
+
+## ## **Applying & Updating Resources**
+
+* `kubectl apply -f <service>.yaml`
+* `kubectl apply -f <controller>.yaml`
+* `kubectl apply -f <directory>`
+* `kubectl edit svc/<service-name>`
+
+---
+
+## ## **Executing Commands in Pods**
+
+* `kubectl exec [pod] -- [command]`
+* `kubectl exec [pod] -c [container] -- [command]`
+* `kubectl exec -it [pod] -- /bin/bash`
+
+---
+
+## ## **Modifying kubeconfig**
+
+* `kubectl config current-context`
+* `kubectl config get-contexts`
+* `kubectl config use-context <context>`
+* `kubectl config set-context --cluster=<cluster> --user=<user>`
+* `kubectl config unset <property>`
+
+---
+
+# 📦 **Resource Types – Short Names**
+
+| Short  | Full Name                  |
+| ------ | -------------------------- |
+| csr    | certificatesigningrequests |
+| cs     | componentstatuses          |
+| cm     | configmaps                 |
+| ds     | daemonsets                 |
+| deploy | deployments                |
+| ep     | endpoints                  |
+| ev     | events                     |
+| hpa    | horizontalpodautoscalers   |
+| ing    | ingresses                  |
+| limits | limitranges                |
+| ns     | namespaces                 |
+| no     | nodes                      |
+| pvc    | persistentvolumeclaims     |
+| pv     | persistentvolumes          |
+| po     | pods                       |
+| pdb    | poddisruptionbudgets       |
+| psp    | podsecuritypolicies        |
+| rs     | replicasets                |
+| rc     | replicationcontrollers     |
+| quota  | resourcequotas             |
+| sa     | serviceaccounts            |
+| svc    | services                   |
+
+---
+
+# 🛠 **Additional kubectl Commands (from second sheet)**
+
+## ## **Global Flags**
+
+* `--namespace <name>` – Specify namespace
+* `--help` – Show help
+
+## ## **Context & Configuration**
+
+* `kubectl config get-contexts`
+* `kubectl config current-context`
+* `kubectl config use-context <context>`
+* `kubectl config delete-context <context>`
+
+---
+
+## ## **Display Resources**
+
+* `kubectl get <resource>` – list all
+* `kubectl get <resource> -o wide`
+* `kubectl get <resource> -A` – all namespaces
+* `kubectl get <resource> <name>` – single resource
+* `kubectl get <resource> <name> -o yaml`
+* `kubectl get <resource> -l <key>=<value>`
+* `kubectl describe <resource>`
+
+---
+
+## ## **Create Resources Manually**
+
+* `kubectl run <name> --image=<image>` – Run pod
+* `kubectl create deployment <name> --image=<image>`
+* `kubectl expose pod <pod> --port=<port>` – Service
+* `kubectl expose deployment <name> --port=<port>`
+* `kubectl create ingress <name> --rule=<host/path=svc:port>`
+* `kubectl create job <name> --image=<image>`
+* `kubectl create job <name> --from=cronjob/<name>`
+* `kubectl create cronjob <name> --image=<image> --schedule=<cron>`
+* `kubectl create secret generic <name> --from-literal=<key>=<value>`
+* `kubectl create secret docker-registry <name> --docker-server=<server> --docker-username=<user> --docker-password=<password>`
+
+---
+
+## ## **Generate YAML Manifests**
+
+* `kubectl create deployment <name> --image=<image> --dry-run=client -o yaml`
+* `kubectl expose deployment <name> --port=<port> --dry-run=client -o yaml`
+
+---
+
+# ☸ **Amazon EKS (Elastic Kubernetes Service)**
+
+## ## **What is EKS?**
+
+Amazon EKS is a managed Kubernetes service by AWS that automates:
+
+* Control plane provisioning
+* Node management (via Node Groups or Fargate)
+* Scaling & security updates
+* Cluster integrations with IAM, VPC, ALB, CloudWatch, etc.
+
+---
+
+# 🚀 **Steps to Create an EKS Cluster**
+
+## ## **1. Install Required Tools**
+
+```
+aws CLI
+kubectl
+eksctl
 ```
 
-### 2. Configure AWS Credentials
+---
 
-```bash
+## ## **2. Configure AWS CLI**
+
+```
 aws configure
 ```
 
-### 3. Install kubectl
+Provide Access Key, Secret Key, Region, Output format.
 
-```bash
-curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.29/latest/bin/linux/amd64/kubectl
-chmod +x kubectl
-sudo mv kubectl /usr/local/bin/
-kubectl version --client
+---
+
+## ## **3. Create EKS Cluster Using eksctl**
+
 ```
-
-### 4. Install Helm
-
-```bash
-curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-helm version
+eksctl create cluster \
+  --name my-cluster \
+  --region us-east-1 \
+  --nodegroup-name ng1 \
+  --node-type t3.medium \
+  --nodes 3
 ```
 
 ---
 
-# ☸️ Cluster Access Setup
+## ## **4. Verify Cluster**
 
-```bash
-aws eks update-kubeconfig --name <CLUSTER_NAME> --region <REGION>
+```
 kubectl get nodes
+kubectl get pods -A
 ```
 
 ---
 
-# 🚀 Deployment Chronology
+## ## **5. Deploy Workloads**
 
-Below is the ~exact sequence~ used to deploy your application.
+Apply a Kubernetes manifest:
 
----
-
-# 🍃 MongoDB Deployment
-
-### Apply your MongoDB manifest:
-
-```bash
-kubectl apply -f mongo_manifests.yaml
-kubectl get pods -n three-tier
 ```
-
-This includes:
-
-* Secret
-* PersistentVolume
-* PersistentVolumeClaim
-* Service
-* Deployment
-
----
-
-# ⚙️ Backend Deployment
-
-### Fix applied: liveness/readiness probe indentation and path update (`/ok`)
-
-### Deploy with Helm:
-
-```bash
-helm upgrade backend-release ./backend-chart \
-  --namespace three-tier-app \
-  --set image.repository="534232118663.dkr.ecr.ap-south-1.amazonaws.com/three-tier-backend-ecr" \
-  --set image.tag="latest" \
-  --set mongo.serviceName="mongodb-svc.workshop.svc.cluster.local" \
-  --set mongo.servicePort=27017
-```
-
-### Validate
-
-```bash
-kubectl get pods -n three-tier-app
+kubectl apply -f deployment.yaml
 ```
 
 ---
 
-# 🎨 Frontend Deployment
+## ## **6. Configure Load Balancing in EKS**
 
-```bash
-helm upgrade frontend-release ./frontend-chart \
-  --namespace three-tier-app \
-  --set image.repository="534232118663.dkr.ecr.ap-south-1.amazonaws.com/three-tier-frontend-ecr" \
-  --set image.tag="latest" \
-  --set service.port=3000
+EKS supports:
+
+* **Classic ELB**
+* **Network Load Balancer (NLB)**
+* **Application Load Balancer (ALB)** via AWS Load Balancer Controller
+
+Install controller:
+
+```
+kubectl apply -f https://github.com/aws/eks-charts/.../aws-load-balancer-controller.yaml
 ```
 
 ---
 
-# 🌍 Ingress / External Access
+## ## **7. Scaling EKS Nodes**
 
-### Fix applied:
-
-Converted JSON-style annotations to YAML block style.
-
-### Apply Ingress using Helm:
-
-```bash
-helm upgrade frontend-release ./frontend-chart \
-  --namespace three-tier-app \
-  --set ingress.enabled=true \
-  --set ingress.className="alb" \
-  --set ingress.annotations."alb\.ingress\.kubernetes\.io/scheme"=internet-facing \
-  --set ingress.annotations."alb\.ingress\.kubernetes\.io/target-type"=ip \
-  --set ingress.annotations."alb\.ingress\.kubernetes\.io/listen-ports"='[{"HTTP":80}]' \
-  --set ingress.hosts[0].host="frontend.amanpathakdevops.study" \
-  --set ingress.hosts[0].paths[0].path="/" \
-  --set ingress.hosts[0].paths[0].pathType="Prefix" \
-  --set ingress.hosts[0].paths[1].path="/api" \
-  --set ingress.hosts[0].paths[1].pathType="Prefix" \
-  --set ingress.hosts[0].paths[1].backend.service.name="backend-release-backend-chart" \
-  --set ingress.hosts[0].paths[1].backend.service.port.number=3500
+```
+eksctl scale nodegroup --cluster=my-cluster --name=ng1 --nodes=5
 ```
 
 ---
 
-# 🔍 Verification
-
-### Check ALB hostname:
-
-```bash
-kubectl get ingress -n three-tier-app
-```
-
-When ALB provisioning is complete, add a **CNAME record** pointing:
+## ## **8. Delete EKS Cluster**
 
 ```
-frontend.amanpathakdevops.study --> <ALB DNS Name>
-```
-
-Then access your app:
-
-```
-http://frontend.amanpathakdevops.study
+eksctl delete cluster --name my-cluster
 ```
 
 ---
 
-# 🧹 Cleanup
+# 🎯 Summary
+
+This document contains:
+
+* Complete kubectl command references
+* Resource types, short names, and usage
+* Full EKS overview & setup steps
+
+This should serve as a consolidated Kubernetes + EKS cheat sheet in markdown format.
+
+
+---
+
+
+# HELM COMMANDS
+# Basic interpretations/context
+Chart:
+```bash
+It is the name of your chart in case it has been pulled and untarred.
+It is <repo_name>/<chart_name> in case the repository has been added but chart not pulled.
+It is the URL/Absolute path to the chart.
+```
+Name:
+```bash 
+It is the name you want to give to your current helm chart installation.
+```
+Release:
+```bash
+Is the name you assigned to an installation instance.
+```
+Revision:
+```bash
+Is the value from the Helm history command
+```
+Repo-name:
+```bash
+The name of a repository.
+```
+DIR:
+```bash
+Directory name/path
+```
+# The Chart File Structure
 
 ```bash
-eksctl delete cluster --name three-tier-cluster --region us-west-2
+wordpress/
+  Chart.yaml          # A YAML file containing information about the chart
+  LICENSE             # OPTIONAL: A plain text file containing the license for the chart
+  README.md           # OPTIONAL: A human-readable README file
+  values.yaml         # The default configuration values for this chart
+  values.schema.json  # OPTIONAL: A JSON Schema for imposing a structure on the values.yaml file
+  charts/             # A directory containing any charts upon which this chart depends.
+  crds/               # Custom Resource Definitions
+  templates/          # A directory of templates that, when combined with values,
+                      # will generate valid Kubernetes manifest files.
+  templates/NOTES.txt # OPTIONAL: A plain text file containing short usage notes
+```
+# The Chart.yaml File
+
+```bash
+apiVersion: The chart API version (required)
+name: The name of the chart (required)
+version: The version of the chart (required)
+kubeVersion: A SemVer range of compatible Kubernetes versions (optional)
+description: A single-sentence description of this project (optional)
+type: The type of the chart (optional)
+keywords:
+  - A list of keywords about this project (optional)
+home: The URL of this projects home page (optional)
+sources:
+  - A list of URLs to source code for this project (optional)
+dependencies: # A list of the chart requirements (optional)
+  - name: The name of the chart (nginx)
+    version: The version of the chart ("1.2.3")
+    repository: (optional) The repository URL ("https://example.com/charts") or alias ("@repo-name")
+    condition: (optional) A yaml path that resolves to a boolean, used for enabling/disabling charts (e.g. subchart1.enabled )
+    tags: # (optional)
+      - Tags can be used to group charts for enabling/disabling together
+    import-values: # (optional)
+      - ImportValues holds the mapping of source values to parent key to be imported. Each item can be a string or pair of child/parent sublist items.
+    alias: (optional) Alias to be used for the chart. Useful when you have to add the same chart multiple times
+maintainers: # (optional)
+  - name: The maintainers name (required for each maintainer)
+    email: The maintainers email (optional for each maintainer)
+    url: A URL for the maintainer (optional for each maintainer)
+icon: A URL to an SVG or PNG image to be used as an icon (optional).
+appVersion: The version of the app that this contains (optional). Needn't be SemVer. Quotes recommended.
+deprecated: Whether this chart is deprecated (optional, boolean)
+annotations:
+  example: A list of annotations keyed by name (optional).
 ```
 
+# Chart Management
 
+```bash
+helm create <name>                      # Creates a chart directory along with the common files and directories used in a chart.
+helm package <chart-path>               # Packages a chart into a versioned chart archive file.
+helm lint <chart>                       # Run tests to examine a chart and identify possible issues:
+helm show all <chart>                   # Inspect a chart and list its contents:
+helm show values <chart>                # Displays the contents of the values.yaml file
+helm pull <chart>                       # Download/pull chart
+helm pull <chart> --untar=true          # If set to true, will untar the chart after downloading it
+helm pull <chart> --verify              # Verify the package before using it
+helm pull <chart> --version <number>    # Default-latest is used, specify a version constraint for the chart version to use
+helm dependency list <chart>            # Display a list of a chart’s dependencies:
+```
+# Install and Uninstall Apps
+
+```bash
+helm install <name> <chart>                           # Install the chart with a name
+helm install <name> <chart> --namespace <namespace>   # Install the chart in a specific namespace
+helm install <name> <chart> --set key1=val1,key2=val2 # Set values on the command line (can specify multiple or separate values with commas)
+helm install <name> <chart> --values <yaml-file/url>  # Install the chart with your specified values
+helm install <name> <chart> --dry-run --debug         # Run a test installation to validate chart (p)
+helm install <name> <chart> --verify                  # Verify the package before using it
+helm install <name> <chart> --dependency-update       # update dependencies if they are missing before installing the chart
+helm uninstall <name>                                 # Uninstalls a release from the current (default) namespace
+helm uninstall <release-name> --namespace <namespace> # Uninstalls a release from the specified namespace
+```
+# Perform App Upgrade and Rollback
+
+```bash
+helm upgrade <release> <chart>                            # Upgrade a release
+helm upgrade <release> <chart> --rollback-on-failure      # If set, upgrade process rolls back changes made in case of failed upgrade.
+helm upgrade <release> <chart> --dependency-update        # update dependencies if they are missing before installing the chart
+helm upgrade <release> <chart> --version <version_number> # specify a version constraint for the chart version to use
+helm upgrade <release> <chart> --values                   # specify values in a YAML file or a URL (can specify multiple)
+helm upgrade <release> <chart> --set key1=val1,key2=val2  # Set values on the command line (can specify multiple or separate valuese)
+helm upgrade <release> <chart> --force                    # Force resource updates through a replacement strategy
+helm rollback <release> <revision>                        # Roll back a release to a specific revision
+helm rollback <release> <revision>  --cleanup-on-fail     # Allow deletion of new resources created in this rollback when rollback fails
+```
+# List, Add, Remove, and Update Repositories
+
+```bash 
+helm repo add <repo-name> <url>   # Add a repository from the internet:
+helm repo list                    # List added chart repositories
+helm repo update                  # Update information of available charts locally from chart repositories
+helm repo remove <repo_name>      # Remove one or more chart repositories
+helm repo index <DIR>             # Read the current directory and generate an index file based on the charts found.
+helm repo index <DIR> --merge     # Merge the generated index with an existing index file
+helm search repo <keyword>        # Search repositories for a keyword in charts
+helm search hub <keyword>         # Search for charts in the Artifact Hub or your own hub instance
+```
+# Helm Release monitoring
+
+```bash
+helm list                       # Lists all of the releases for a specified namespace, uses current namespace context if namespace not specified
+helm list --all                 # Show all releases without any filter applied, can use -a
+helm list --all-namespaces      # List releases across all namespaces, we can use -A
+helm list -l key1=value1,key2=value2 # Selector (label query) to filter on, supports '=', '==', and '!='
+helm list --date                # Sort by release date
+helm list --deployed            # Show deployed releases. If no other is specified, this will be automatically enabled
+helm list --pending             # Show pending releases
+helm list --failed              # Show failed releases
+helm list --uninstalled         # Show uninstalled releases (if 'helm uninstall --keep-history' was used)
+helm list --superseded          # Show superseded releases
+helm list -o yaml               # Prints the output in the specified format. Allowed values: table, json, yaml (default table)
+helm status <release>           # This command shows the status of a named release.
+helm status <release> --revision <number>   # if set, display the status of the named release with revision
+helm history <release>          # Historical revisions for a given release.
+helm env                        # Env prints out all the environment information in use by Helm.
+```
+# Download Release Information
+
+```bash
+helm get all <release>      # A human readable collection of information about the notes, hooks, supplied values, and generated manifest file of the given release.
+helm get hooks <release>    # This command downloads hooks for a given release. Hooks are formatted in YAML and separated by the YAML '---\n' separator.
+helm get manifest <release> # A manifest is a YAML-encoded representation of the Kubernetes resources that were generated from this release's chart(s). If a chart is dependent on other charts, those resources will also be included in the manifest.
+helm get notes <release>    # Shows notes provided by the chart of a named release.
+helm get values <release>   # Downloads a values file for a given release. use -o to format output
+```
+# Plugin Management
+
+```bash
+helm plugin install <path/url>      # Install plugins
+helm plugin list                    # View a list of all installed plugins
+helm plugin update <plugin>         # Update plugins
+helm plugin uninstall <plugin>      # Uninstall a plugin
+```
