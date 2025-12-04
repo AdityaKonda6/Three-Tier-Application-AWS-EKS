@@ -44,6 +44,7 @@ Special thanks to [LondheShubham153](https://github.com/LondheShubham153) for he
 
 [![Watch the video](https://img.youtube.com/vi/YlUa3t9Aaic/maxresdefault.jpg)](https://www.youtube.com/watch?v=YlUa3t9Aaic)
 
+Use these [Kubernetes Cheat Sheet](https://www.interviewbit.com/kubernetes-cheat-sheet/) for improving the knowledge on Kubernetes and skills needed for this project!
 ---
 
 # 🔁 Architecture Flow
