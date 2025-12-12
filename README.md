@@ -4,10 +4,12 @@ A comprehensive guide to deploying a **React Frontend**, **Node.js Backend**, an
 
 ---
 
-# 🏗️ Deployment Architecture
+# 🏗️ Three-Tier Application Architecture
 
 <img width="840" height="383" alt="image" src="https://github.com/user-attachments/assets/1ec2e7d4-45a3-4fc4-a408-d1274e623dd0" />
 
+# 🏗️ Kubernetes Architecture
+<img width="1024" height="576" alt="image" src="https://github.com/user-attachments/assets/95e4d8d0-bdd2-4222-8083-92ea34651885" />
 
 ---
 
